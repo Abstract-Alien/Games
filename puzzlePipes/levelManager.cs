@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -75,3 +75,4 @@ public class LevelManager : MonoBehaviour {
 // TODO different sound effect for rotating tiles
 // TODO sound effect for adding velocity to a ball
 // TODO main menu music, music for different worlds, have music persist from level to level (keep music minimal and mellow)
+
