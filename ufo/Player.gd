@@ -10,13 +10,14 @@ func _ready():
 func _process(delta):
 	var velocity = Vector2()  # Player's movement vector
 	
-	if Input.is_action_pressed("ui_right"):
+	# Controls (Keyboard and Gamepad)
+	if Input.is_action_pressed("ui_right") or Input.get_joy_axis(0, JOY_AXIS_0) > 0.25:
 		velocity.x += 1
-	if Input.is_action_pressed("ui_left"):
+	if Input.is_action_pressed("ui_left") or Input.get_joy_axis(0, JOY_AXIS_0) < -0.25:
 		velocity.x -= 1
-	if Input.is_action_pressed("ui_up"):
+	if Input.is_action_pressed("ui_up") or Input.get_joy_axis(0, JOY_AXIS_1) < -0.25:
 		velocity.y -= 1
-	if Input.is_action_pressed("ui_down"):
+	if Input.is_action_pressed("ui_down") or Input.get_joy_axis(0, JOY_AXIS_1) > 0.25:
 		velocity.y += 1
 	
 	if velocity.length() > 0:
