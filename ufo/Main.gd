@@ -1,16 +1,21 @@
 extends Node
 
 export (PackedScene) var Mob
+#export (PackedScene) var Laser
 var score
 var movement
 var started
 var touching
+var shooting
+
+#var laser_scene
 
 
 func _ready():
 	randomize()
 	started = false
 	touching = false
+	shooting = false
 	$MoveStick.set_process_input(false)
 	$ShootStick.set_process_input(false)
 
@@ -20,6 +25,8 @@ func _process(delta):
 		if touching:
 			movement = $MoveStick.get_direction()
 			$Player.set_direction(movement)
+		if shooting:
+			$Player.set_shoot_direction($ShootStick.get_direction())
 
 
 func game_over():
@@ -28,7 +35,7 @@ func game_over():
 	$MobTimer.stop()
 	$HUD.show_game_over()
 	yield(get_tree().create_timer(2), "timeout")
-	get_tree().change_scene("res://Main.tscn")
+	get_tree().change_scene("res://Scenes/Main.tscn")
 	#$Music.stop()
 	#$DeathSound.play()
 	
@@ -87,12 +94,17 @@ func _on_AnalogStick_released():
 	touching = false
 
 
+func _on_ShootStick_shooting():
+	shooting = true
+
+
+func _on_ShootStick_not_shooting():
+	shooting = false
+
 
 ### TODO
 
-
-### add another one for shooting
-### shooting enemies will destroy them
+### slower shooting
 ### figure out how to make movement go slow if only moving the stick a little bit
 ### make player able to take 3 hits before death
 ### tiny screen shake when player hit
@@ -111,3 +123,11 @@ func _on_AnalogStick_released():
 ### pushing either button pauses the game
 ### tapping outside of the weapon select menu closes it
 ### have to close the game menu manually
+
+
+
+
+
+
+
+

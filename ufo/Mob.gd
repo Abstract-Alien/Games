@@ -5,3 +5,5 @@ export (int) var max_speed
 
 func _on_Visibility_screen_exited():
 	queue_free()
+
+
