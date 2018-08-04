@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
-signal touching
-signal released
+signal shooting
+signal not_shooting
 
 export var direction = Vector2()
 var touchID = -1
@@ -16,11 +16,11 @@ func _ready():
 
 
 func _input(event):
-	### Move stick controls
+	### Shoot stick controls
 	var touch_position = Vector2()
 	
-	# Detect a touch and start movement if on left side of screen
-	if event is InputEventScreenTouch && touchID == -1 && event.pressed && event.position.x < screensize.x / 2:
+	# Detect a touch on right side of screen
+	if event is InputEventScreenTouch && touchID == -1 && event.pressed && event.position.x > screensize.x / 2 && event.position.y > 100:
 		#emit_signal("touching")
 		show()
 		touchID = event.index
@@ -29,11 +29,12 @@ func _input(event):
 		
 	# Detect a drag if it is still the same touch
 	elif event is InputEventScreenDrag && event.index == touchID:
-		emit_signal("touching")
+		emit_signal("shooting")
 		stick.position = event.position - position  # offset the stick position
 		### Need to figure out how to clamp to a circle instead of rectangle
 		stick.position.x = clamp(stick.position.x, -100, 100) 
 		stick.position.y = clamp(stick.position.y, -100, 100) 
+		
 		direction = stick.position - touch_position
 		
 	# Detect if touch is released
@@ -42,7 +43,7 @@ func _input(event):
 		touchID = -1
 		stick.position = Vector2(0, 0)
 		direction = Vector2(0, 0)
-		emit_signal("released")
+		emit_signal("not_shooting")
 
 
 func get_direction():

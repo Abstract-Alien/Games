@@ -1,0 +1,183 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Mob.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Camera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Sprites/Environments/background.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/Environments/midground.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/Environments/foreground.png" type="Texture" id=6]
+[ext_resource path="res://Scenes/HUD.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Sounds/Music/House In a Forest Loop.ogg" type="AudioStream" id=9]
+[ext_resource path="res://Sounds/SFX/gameover.wav" type="AudioStream" id=10]
+[ext_resource path="res://Scenes/AnalogStick.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scenes/ShootStick.tscn" type="PackedScene" id=12]
+
+[sub_resource type="Curve2D" id=1]
+
+bake_interval = 5.0
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, -0.857361, -2.10706, 0, 0, 0, 0, 721.61, -0.478043, 0, 0, 0, 0, 719.981, 476.008, 0, 0, 0, 0, -2.48637, 473.565, 0, 0, 0, 0, 0.771652, -3.73607, 0, 0, 0, 0, -0.857361, -2.10706 )
+}
+
+[node name="Main" type="Node" index="0"]
+
+script = ExtResource( 1 )
+Mob = ExtResource( 2 )
+
+[node name="Camera" parent="." index="0" instance=ExtResource( 3 )]
+
+[node name="Background" type="Control" parent="." index="1"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 40.0
+margin_bottom = 40.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+_sections_unfolded = [ "Anchor", "Focus", "Grow Direction", "Hint", "Margin", "Mouse", "Rect", "Size Flags", "Theme" ]
+
+[node name="Sprite" type="Sprite" parent="Background" index="0"]
+
+position = Vector2( 357.502, 242.177 )
+scale = Vector2( 0.375631, 0.255444 )
+z_index = -10
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Offset", "Transform", "Z Index" ]
+
+[node name="Sprite2" type="Sprite" parent="Background" index="1"]
+
+position = Vector2( 358.741, 241.68 )
+scale = Vector2( 0.365212, 0.243475 )
+z_index = -10
+texture = ExtResource( 5 )
+_sections_unfolded = [ "Offset", "Z Index" ]
+
+[node name="Sprite3" type="Sprite" parent="Background" index="2"]
+
+position = Vector2( 356.544, 235.648 )
+scale = Vector2( 0.365528, 0.246679 )
+z_index = -10
+texture = ExtResource( 6 )
+_sections_unfolded = [ "Offset", "Transform", "Z Index" ]
+
+[node name="HUD" parent="." index="2" instance=ExtResource( 7 )]
+
+[node name="Player" parent="." index="3" instance=ExtResource( 8 )]
+
+position = Vector2( 357.053, 286.87 )
+
+[node name="MobTimer" type="Timer" parent="." index="4"]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = false
+autostart = false
+
+[node name="ScoreTimer" type="Timer" parent="." index="5"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = false
+
+[node name="StartTimer" type="Timer" parent="." index="6"]
+
+process_mode = 1
+wait_time = 2.0
+one_shot = true
+autostart = false
+
+[node name="StartPosition" type="Position2D" parent="." index="7"]
+
+position = Vector2( 357.425, 286.799 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="MobPath" type="Path2D" parent="." index="8"]
+
+editor/display_folded = true
+self_modulate = Color( 0.5, 0.6, 1, 0.7 )
+curve = SubResource( 1 )
+
+[node name="MobSpawnLocation" type="PathFollow2D" parent="MobPath" index="0"]
+
+position = Vector2( -0.857361, -2.10706 )
+rotation = 0.00225476
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+
+[node name="Music" type="AudioStreamPlayer" parent="." index="9"]
+
+stream = ExtResource( 9 )
+volume_db = 0.0
+pitch_scale = 1.0
+autoplay = false
+mix_target = 0
+bus = "Master"
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="." index="10"]
+
+stream = ExtResource( 10 )
+volume_db = 0.0
+pitch_scale = 1.0
+autoplay = false
+mix_target = 0
+bus = "Master"
+
+[node name="MoveStick" parent="." index="11" instance=ExtResource( 11 )]
+
+position = Vector2( 101.296, 345.195 )
+_sections_unfolded = [ "Angular", "Applied Forces", "Collision", "Linear", "Pause", "Pickable", "Transform", "collision" ]
+
+[node name="StartDelay" type="Timer" parent="." index="12"]
+
+process_mode = 1
+wait_time = 2.0
+one_shot = false
+autostart = false
+
+[node name="ShootStick" parent="." index="13" instance=ExtResource( 12 )]
+
+position = Vector2( 627.591, 335.025 )
+
+[connection signal="start_game" from="HUD" to="." method="_on_HUD_start_game"]
+
+[connection signal="damaged" from="Player" to="Camera" method="_on_Player_damaged"]
+
+[connection signal="hit" from="Player" to="." method="game_over"]
+
+[connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]
+
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+
+[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
+
+[connection signal="released" from="MoveStick" to="." method="_on_AnalogStick_released"]
+
+[connection signal="released" from="MoveStick" to="Player" method="_on_AnalogStick_released"]
+
+[connection signal="touching" from="MoveStick" to="." method="_on_AnalogStick_touching"]
+
+[connection signal="touching" from="MoveStick" to="Player" method="_on_AnalogStick_touching"]
+
+[connection signal="timeout" from="StartDelay" to="." method="_on_StartDelay_timeout"]
+
+[connection signal="not_shooting" from="ShootStick" to="." method="_on_ShootStick_not_shooting"]
+
+[connection signal="not_shooting" from="ShootStick" to="Player" method="_on_ShootStick_not_shooting"]
+
+[connection signal="shooting" from="ShootStick" to="." method="_on_ShootStick_shooting"]
+
+

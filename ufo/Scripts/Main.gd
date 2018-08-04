@@ -1,14 +1,12 @@
 extends Node
 
 export (PackedScene) var Mob
-#export (PackedScene) var Laser
+
 var score
 var movement
 var started
 var touching
 var shooting
-
-#var laser_scene
 
 
 func _ready():
@@ -16,28 +14,37 @@ func _ready():
 	started = false
 	touching = false
 	shooting = false
+
 	$MoveStick.set_process_input(false)
 	$ShootStick.set_process_input(false)
 
 
 func _process(delta):
 	if started:
+		
 		if touching:
 			movement = $MoveStick.get_direction()
 			$Player.set_direction(movement)
+			
 		if shooting:
 			$Player.set_shoot_direction($ShootStick.get_direction())
+#			yield(get_tree().create_timer(0.1), "timeout")
+#			get_node("Player/Laser").connect("damaged", self, "_on_Laser_body_entered")
 
+
+func _on_Laser_body_entered():
+	score += 1
 
 func game_over():
 	started = false
 	$ScoreTimer.stop()
 	$MobTimer.stop()
 	$HUD.show_game_over()
+#	$Music.stop()
+#	$DeathSound.play()
 	yield(get_tree().create_timer(2), "timeout")
 	get_tree().change_scene("res://Scenes/Main.tscn")
-	#$Music.stop()
-	#$DeathSound.play()
+	
 	
 
 func new_game():
@@ -52,7 +59,7 @@ func new_game():
 	$MoveStick.set_process_input(true)
 	$ShootStick.show()
 	$ShootStick.set_process_input(true)
-	#$Music.play()
+#	$Music.play()
 
 
 func _on_ScoreTimer_timeout():
@@ -62,7 +69,7 @@ func _on_ScoreTimer_timeout():
 
 func _on_StartTimer_timeout():
 	$MobTimer.start()
-	$ScoreTimer.start()
+	#$ScoreTimer.start()
 
 
 func _on_MobTimer_timeout():
@@ -104,10 +111,10 @@ func _on_ShootStick_not_shooting():
 
 ### TODO
 
-### slower shooting
-### figure out how to make movement go slow if only moving the stick a little bit
-### make player able to take 3 hits before death
-### tiny screen shake when player hit
+### lasers to instantiate on the outside of ufo
+### if moving fast, lasers look like they aren't attached to ufo when shot. fix that
+
+### improve screen shake
 ### particles or something else to signify player taking damage
 ### specific player death animation (explosion maybe)
 ### UFO starts smoking when one hit left
@@ -123,11 +130,3 @@ func _on_ShootStick_not_shooting():
 ### pushing either button pauses the game
 ### tapping outside of the weapon select menu closes it
 ### have to close the game menu manually
-
-
-
-
-
-
-
-

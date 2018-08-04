@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Scripts/laser.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/Items/laser.png" type="Texture" id=2]
+[ext_resource path="res://Scenes/LaserTrail.tscn" type="PackedScene" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 10, 10 )
+
+[sub_resource type="Gradient" id=2]
+
+offsets = PoolRealArray( 0, 0.0848329, 1 )
+colors = PoolColorArray( 0.976563, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 )
+
+[node name="Laser" type="RigidBody2D"]
+
+position = Vector2( 0, 0.456245 )
+scale = Vector2( 1, 0.497199 )
+z_index = -1
+input_pickable = false
+collision_layer = 2
+collision_mask = 4
+mode = 0
+mass = 1.0
+friction = 1.0
+bounce = 0.0
+gravity_scale = 0.0
+custom_integrator = false
+continuous_cd = 0
+contacts_reported = 1
+contact_monitor = true
+sleeping = false
+can_sleep = true
+linear_velocity = Vector2( 0, 0 )
+linear_damp = -1.0
+angular_velocity = 0.0
+angular_damp = -1.0
+script = ExtResource( 1 )
+_sections_unfolded = [ "Collision", "Transform", "Z Index" ]
+speed = -1000
+
+[node name="Sprite" type="Sprite" parent="." index="0"]
+
+position = Vector2( 0.137577, 0.365852 )
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
+
+position = Vector2( -0.37661, -1.25102 )
+scale = Vector2( 0.0981002, 2.18002 )
+shape = SubResource( 1 )
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="." index="2"]
+
+rect = Rect2( -10, -10, 20, 20 )
+
+[node name="LaserTrail" parent="." index="3" instance=ExtResource( 3 )]
+
+width = 3.0
+default_color = Color( 0.832031, 0.0463527, 0.0463527, 1 )
+gradient = SubResource( 2 )
+_sections_unfolded = [ "Fill", "Visibility" ]
+target_path = NodePath("..")
+trail_length = 7
+
+[connection signal="body_entered" from="." to="." method="_on_Laser_body_entered"]
+
+[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
+
+
