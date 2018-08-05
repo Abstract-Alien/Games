@@ -5,11 +5,6 @@ var time_left = 0
 var is_shaking = false
 
 
-func _ready():
-	# Called when the node is added to the scene for the first time.
-	# Initialization here
-	pass
-
 func shake(new_magnitude, lifetime):
 	if magnitude > new_magnitude:
 		return
@@ -25,6 +20,7 @@ func shake(new_magnitude, lifetime):
 	while time_left > 0:
 		var shake = Vector2()
 		
+		# Sometimes the shake isn't noticeable
 		shake.x = rand_range(-magnitude, magnitude)
 		shake.y = rand_range(-magnitude, magnitude)
 		
@@ -38,7 +34,6 @@ func shake(new_magnitude, lifetime):
 	is_shaking = false
 
 
-
 func _on_Player_damaged():
-	shake(2, 0.2)
+	shake(2.5, 0.2)
 

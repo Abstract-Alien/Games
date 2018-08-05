@@ -10,7 +10,7 @@ var screensize          # size of the game window
 var direction = Vector2()
 var shoot_direction
 var tween
-var shooting
+var is_shooting
 var acceleration
 
 var player_health
@@ -20,15 +20,18 @@ var temp
 
 func _ready():
 	player_health = 3
+	check_health()
 	speed = 0
 	screensize = get_viewport_rect().size
 	tween = get_node("Tween")
-	shooting = false
+	is_shooting = false
 	acceleration = 0
 
 
+
 func _process(delta):
-	$Trail.emitting = false
+	#$Trail.emitting = false
+	#check_state()
 	var velocity = Vector2()  # Player's movement vector
 	
 	# Controls (Keyboard and Gamepad)
@@ -47,17 +50,19 @@ func _process(delta):
 	velocity +=  direction
 	lean(direction.x)
 	
-	if shooting:
+	if is_shooting:
 		if $ShootTimer.time_left == 0:
 			shoot()
 	
 	if velocity.length() > 0:
+		#move_and_collide(velocity.normalized())# * speed)
+		
 		velocity = velocity.normalized() * speed
-		$Trail.emitting = true
-		# play animation here if have one
-	
-	else:
-		$Trail.emitting = false
+#		$Trail.emitting = true
+#		# play animation here if have one
+#
+#	else:
+#		$Trail.emitting = false
 
 	
 	position += velocity * delta
@@ -65,10 +70,11 @@ func _process(delta):
 	position.y = clamp(position.y, 0, screensize.y)
 
 
+
 func set_shoot_direction(dir):
 	temp = dir
 	shoot_direction = Vector2(-dir.y, dir.x).angle()
-	shooting = true
+	is_shooting = true
 
 
 func shoot():
@@ -83,22 +89,36 @@ func shoot():
 
 
 func _on_ShootStick_not_shooting():
-	shooting = false
+	is_shooting = false
 
 
 func _on_Player_body_entered(body):
-	body.queue_free()
-	player_health -= 1
-	print("hit")
-	emit_signal("damaged")
+	#print("touching it")
+	if body.is_in_group("Enemies"):
+		body.queue_free()
+		player_health -= 1
+		$DamageParticles.emitting = true
+		emit_signal("damaged")
+		check_health()
+	
+	if body.is_in_group("Pickup"):
+		print("picked up")
+		if body.is_in_group("HealthPickup"):
+			heal(body) # function will make health orb appear to rotate around player
+			### quickly rotates to center and then triggers a healing effect and health += 1
+			print("healed")
+	
 	### particle of taking damage
 	### if health == 2 set the particle system to be more smokey
 	### if health == 1 set the particle system to be really smokey
 	### if health == 0 make a little explosion
-	if player_health == 0:
-		hide()  # Player disappears after being hit
-		emit_signal("hit")
-		$CollisionShape2D.disabled = true
+
+func heal(pickup):
+	### create an effect that makes the pickup spiral into player	
+	player_health += 1
+	$HealingParticles.emitting = true
+	pickup.queue_free()
+	check_health()
 
 
 func start(pos):
@@ -116,6 +136,9 @@ func _on_AnalogStick_released():
 	tween.interpolate_property(self, "speed", speed, 0, 0.6, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.start()
 	
+	if player_health == 3:
+		$Trail.emitting = false
+	
 
 	#speed = 0
 	#acceleration = 0
@@ -132,6 +155,9 @@ func _on_AnalogStick_touching():
 
 	tween.interpolate_property(self, "speed", speed, acceleration, 0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	tween.start()
+	
+	$Trail.emitting = true
+
 
 func lean(direc):
 	tween.interpolate_property(self, "rotation", 0, direc * speed / 100, 20, Tween.TRANS_LINEAR, Tween.EASE_IN)
@@ -142,8 +168,46 @@ func lean(direc):
 #	tween.interpolate_property(self, "rotation", direction, 0, 20, Tween.TRANS_LINEAR, Tween.EASE_IN)
 #	tween.start()
 
+func check_health():
+	if player_health == 3:
+		$Trail.process_material.scale = 2
+		$Trail.lifetime = 2.5
+		$Trail.amount = 10 
+		
+	if player_health == 2:
+		$Trail.process_material.scale = 7
+		$Trail.lifetime = 6
+		$Trail.amount = 30
+
+		$Trail.speed_scale = 3
+	
+	if player_health == 1:
+		$Trail.process_material.scale = 15
+		$Trail.lifetime = 9
+		$Trail.amount = 50
+		$Trail.speed_scale = 4
+		
+	if player_health == 0:
+		hide()  # Player disappears after being hit
+		emit_signal("hit")
+		$CollisionShape2D.disabled = true
 
 
 
 
 
+#func _on_ColliderArea_body_entered(body):
+#	body.queue_free()
+#	player_health -= 1
+#	emit_signal("damaged")
+#	check_health()
+#
+#	### particle of taking damage
+#	### if health == 2 set the particle system to be more smokey
+#	### if health == 1 set the particle system to be really smokey
+#	### if health == 0 make a little explosion
+#	if player_health == 0:
+#		hide()  # Player disappears after being hit
+#		emit_signal("hit")
+#		$CollisionShape2D.disabled = true
+#	pass # replace with function body

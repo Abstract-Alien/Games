@@ -28,8 +28,6 @@ func _process(delta):
 			
 		if shooting:
 			$Player.set_shoot_direction($ShootStick.get_direction())
-#			yield(get_tree().create_timer(0.1), "timeout")
-#			get_node("Player/Laser").connect("damaged", self, "_on_Laser_body_entered")
 
 
 func _on_Laser_body_entered():
@@ -70,6 +68,7 @@ func _on_ScoreTimer_timeout():
 func _on_StartTimer_timeout():
 	$MobTimer.start()
 	#$ScoreTimer.start()
+	pass
 
 
 func _on_MobTimer_timeout():
@@ -117,8 +116,9 @@ func _on_ShootStick_not_shooting():
 ### improve screen shake
 ### particles or something else to signify player taking damage
 ### specific player death animation (explosion maybe)
-### UFO starts smoking when one hit left
+### UFO smoke on low health looks more like smoke
 ### pickups that will heal the UFO
+### health pickups only drop if player is damaged
 ### enemy movement animations
 ### particles or something to signify hitting an enemy
 ### specific enemy death animation

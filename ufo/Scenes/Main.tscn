@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Mob.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Sounds/SFX/gameover.wav" type="AudioStream" id=10]
 [ext_resource path="res://Scenes/AnalogStick.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Scenes/ShootStick.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Scenes/HealthPickup.tscn" type="PackedScene" id=13]
 
 [sub_resource type="Curve2D" id=1]
 
@@ -20,7 +21,7 @@ _data = {
 "points": PoolVector2Array( 0, 0, 0, 0, -0.857361, -2.10706, 0, 0, 0, 0, 721.61, -0.478043, 0, 0, 0, 0, 719.981, 476.008, 0, 0, 0, 0, -2.48637, 473.565, 0, 0, 0, 0, 0.771652, -3.73607, 0, 0, 0, 0, -0.857361, -2.10706 )
 }
 
-[node name="Main" type="Node" index="0"]
+[node name="Main" type="Node"]
 
 script = ExtResource( 1 )
 Mob = ExtResource( 2 )
@@ -152,6 +153,14 @@ autostart = false
 
 position = Vector2( 627.591, 335.025 )
 
+[node name="HealthPickup" parent="." index="14" instance=ExtResource( 13 )]
+
+position = Vector2( 292.604, 289.678 )
+
+[node name="HealthPickup2" parent="." index="15" instance=ExtResource( 13 )]
+
+position = Vector2( 192.004, 154.117 )
+
 [connection signal="start_game" from="HUD" to="." method="_on_HUD_start_game"]
 
 [connection signal="damaged" from="Player" to="Camera" method="_on_Player_damaged"]
@@ -164,19 +173,19 @@ position = Vector2( 627.591, 335.025 )
 
 [connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
 
-[connection signal="released" from="MoveStick" to="." method="_on_AnalogStick_released"]
-
 [connection signal="released" from="MoveStick" to="Player" method="_on_AnalogStick_released"]
 
-[connection signal="touching" from="MoveStick" to="." method="_on_AnalogStick_touching"]
+[connection signal="released" from="MoveStick" to="." method="_on_AnalogStick_released"]
 
 [connection signal="touching" from="MoveStick" to="Player" method="_on_AnalogStick_touching"]
 
+[connection signal="touching" from="MoveStick" to="." method="_on_AnalogStick_touching"]
+
 [connection signal="timeout" from="StartDelay" to="." method="_on_StartDelay_timeout"]
 
-[connection signal="not_shooting" from="ShootStick" to="." method="_on_ShootStick_not_shooting"]
-
 [connection signal="not_shooting" from="ShootStick" to="Player" method="_on_ShootStick_not_shooting"]
+
+[connection signal="not_shooting" from="ShootStick" to="." method="_on_ShootStick_not_shooting"]
 
 [connection signal="shooting" from="ShootStick" to="." method="_on_ShootStick_shooting"]
 
