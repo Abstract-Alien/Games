@@ -32,8 +32,8 @@ func _input(event):
 		emit_signal("shooting")
 		stick.position = event.position - position  # offset the stick position
 		### Need to figure out how to clamp to a circle instead of rectangle
-		stick.position.x = clamp(stick.position.x, -100, 100) 
-		stick.position.y = clamp(stick.position.y, -100, 100) 
+		if stick.position.length() != 0:
+			stick.position = stick.position.clamped(100)
 		
 		direction = stick.position - touch_position
 		

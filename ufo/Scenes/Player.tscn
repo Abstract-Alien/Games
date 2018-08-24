@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Laser.tscn" type="PackedScene" id=2]
@@ -61,37 +61,48 @@ custom_solver_bias = 0.0
 radius = 10.0
 height = 20.0
 
-[sub_resource type="ParticlesMaterial" id=5]
+[sub_resource type="Gradient" id=5]
+
+offsets = PoolRealArray( 0, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=6]
+
+flags = 4
+gradient = SubResource( 5 )
+width = 2048
+
+[sub_resource type="ParticlesMaterial" id=7]
 
 render_priority = 0
 trail_divisor = 1
-emission_shape = 2
-emission_box_extents = Vector3( 50, 1, 1 )
+emission_shape = 1
+emission_sphere_radius = 60.0
 flag_align_y = false
 flag_rotate_y = false
 flag_disable_z = true
 spread = 180.0
 flatness = 0.0
-gravity = Vector3( 0, -50, 0 )
+gravity = Vector3( 0, 0, 0 )
 initial_velocity = 1.0
 initial_velocity_random = 0.0
 angular_velocity = 0.0
 angular_velocity_random = 0.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
-linear_accel = 0.0
+linear_accel = -10.0
 linear_accel_random = 0.0
-radial_accel = 0.0
+radial_accel = -75.0
 radial_accel_random = 0.0
-tangential_accel = 0.0
+tangential_accel = 100.0
 tangential_accel_random = 0.0
 damping = 0.0
 damping_random = 0.0
 angle = 0.0
 angle_random = 0.0
 scale = 1.0
-scale_random = 0.0
-color = Color( 1, 1, 1, 1 )
+scale_random = 1.0
+color_ramp = SubResource( 6 )
 hue_variation = 0.0
 hue_variation_random = 0.0
 anim_speed = 0.0
@@ -99,49 +110,66 @@ anim_speed_random = 0.0
 anim_offset = 0.0
 anim_offset_random = 0.0
 anim_loop = false
-_sections_unfolded = [ "Angle", "Emission Shape", "Gravity", "Spread" ]
+_sections_unfolded = [ "Angle", "Color", "Emission Shape", "Gravity", "Hue Variation", "Linear Accel", "Radial Accel", "Scale", "Spread", "Tangential Accel" ]
 
-[sub_resource type="ParticlesMaterial" id=6]
+[sub_resource type="Gradient" id=8]
+
+offsets = PoolRealArray( 0, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=9]
+
+flags = 4
+gradient = SubResource( 8 )
+width = 2048
+
+[sub_resource type="ParticlesMaterial" id=10]
 
 render_priority = 0
 trail_divisor = 1
-emission_shape = 2
-emission_box_extents = Vector3( 50, 1, 1 )
+emission_shape = 1
+emission_sphere_radius = 1.0
 flag_align_y = false
 flag_rotate_y = false
 flag_disable_z = true
-spread = 45.0
+spread = 180.0
 flatness = 0.0
-gravity = Vector3( 0, -5, 0 )
-initial_velocity = 10.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 0.0
 initial_velocity_random = 0.0
 angular_velocity = 0.0
 angular_velocity_random = 0.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
-linear_accel = 0.0
-linear_accel_random = 0.5
-radial_accel = 0.0
-radial_accel_random = 0.0
+linear_accel = 6.0
+linear_accel_random = 1.0
+radial_accel = 2.0
+radial_accel_random = 1.0
 tangential_accel = 0.0
 tangential_accel_random = 0.0
 damping = 0.0
 damping_random = 0.0
-angle = 0.0
-angle_random = 0.0
+angle = 10.0
+angle_random = 1.0
 scale = 2.0
 scale_random = 1.0
-color = Color( 0, 0, 0, 1 )
-hue_variation = 0.0
+color_ramp = SubResource( 9 )
+hue_variation = 1.0
 hue_variation_random = 0.0
 anim_speed = 0.0
 anim_speed_random = 0.0
 anim_offset = 0.0
 anim_offset_random = 0.0
 anim_loop = false
-_sections_unfolded = [ "Angular Velocity", "Color", "Emission Shape", "Gravity", "Initial Velocity", "Linear Accel", "Scale", "Spread" ]
+_sections_unfolded = [ "Angle", "Angular Velocity", "Color", "Damping", "Emission Shape", "Gravity", "Hue Variation", "Initial Velocity", "Linear Accel", "Radial Accel", "Scale", "Spread", "Tangential Accel" ]
 
-[node name="Player" type="Area2D" index="0"]
+[sub_resource type="CapsuleShape2D" id=11]
+
+custom_solver_bias = 0.0
+radius = 18.1028
+height = 11.1993
+
+[node name="Player" type="Area2D"]
 
 position = Vector2( -0.538559, 0.618938 )
 scale = Vector2( 0.5, 0.7 )
@@ -150,6 +178,7 @@ gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
+collision_layer = 17
 collision_mask = 17
 audio_bus_override = false
 audio_bus_name = "Master"
@@ -223,18 +252,18 @@ show_behind_parent = true
 rotation = 3.14159
 emitting = false
 amount = 100
-lifetime = 1.0
+lifetime = 3.0
 one_shot = true
-preprocess = 0.5
-speed_scale = 1.0
-explosiveness = 0.0
+preprocess = 0.0
+speed_scale = 3.0
+explosiveness = 1.0
 randomness = 1.0
 fixed_fps = 0
 fract_delta = true
 visibility_rect = Rect2( -100, -100, 200, 200 )
 local_coords = false
 draw_order = 0
-process_material = SubResource( 5 )
+process_material = SubResource( 7 )
 texture = null
 normal_map = null
 h_frames = 1
@@ -243,14 +272,16 @@ _sections_unfolded = [ "Drawing", "Process Material", "Time", "Transform", "Visi
 
 [node name="DamageParticles" type="Particles2D" parent="." index="7"]
 
+modulate = Color( 0, 0, 0, 1 )
+self_modulate = Color( 1, 1, 1, 0.845765 )
 show_behind_parent = true
 rotation = 3.14159
 emitting = false
-amount = 500
-lifetime = 2.0
+amount = 50
+lifetime = 5.0
 one_shot = true
-preprocess = 0.0
-speed_scale = 1.0
+preprocess = 0.5
+speed_scale = 5.0
 explosiveness = 1.0
 randomness = 0.0
 fixed_fps = 0
@@ -258,13 +289,28 @@ fract_delta = true
 visibility_rect = Rect2( -100, -100, 200, 200 )
 local_coords = false
 draw_order = 0
-process_material = SubResource( 6 )
+process_material = SubResource( 10 )
 texture = null
 normal_map = null
 h_frames = 1
 v_frames = 1
 _sections_unfolded = [ "Drawing", "Process Material", "Time", "Transform", "Visibility" ]
 
-[connection signal="body_entered" from="." to="." method="_on_Player_body_entered"]
+[node name="StaticBody2D" type="KinematicBody2D" parent="." index="8"]
+
+position = Vector2( -0.720756, -3.99636 )
+scale = Vector2( 1.90009, 0.556232 )
+input_pickable = false
+collision_layer = 17
+collision_mask = 17
+collision/safe_margin = 0.08
+_sections_unfolded = [ "Collision" ]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" index="0"]
+
+position = Vector2( -1.19906, 6.94856 )
+rotation = 1.5708
+shape = SubResource( 11 )
+_sections_unfolded = [ "Transform" ]
 
 

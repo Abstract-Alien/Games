@@ -1,4 +1,5 @@
 extends Area2D
+#extends KinematicBody2D
 
 signal hit
 signal damaged
@@ -12,6 +13,8 @@ var shoot_direction
 var tween
 var is_shooting
 var acceleration
+var health_pickup
+var velocity = Vector2()
 
 var player_health
 
@@ -26,14 +29,17 @@ func _ready():
 	tween = get_node("Tween")
 	is_shooting = false
 	acceleration = 0
-
-
-
-func _process(delta):
-	#$Trail.emitting = false
-	#check_state()
-	var velocity = Vector2()  # Player's movement vector
 	
+
+
+
+func _physics_process(delta):
+		
+	
+#	#$Trail.emitting = false
+#	#check_state()
+#	#var velocity = Vector2()  # Player's movement vector
+#
 	# Controls (Keyboard and Gamepad)
 	if Input.is_action_pressed("ui_right"):  
 		velocity.x += 1
@@ -43,31 +49,31 @@ func _process(delta):
 		velocity.y -= 1
 	if Input.is_action_pressed("ui_down"):
 		velocity.y += 1
-	
+
 	# Touch movement
 
 	#if acceleration > 50:
 	velocity +=  direction
 	lean(direction.x)
-	
+
 	if is_shooting:
 		if $ShootTimer.time_left == 0:
 			shoot()
-	
-	if velocity.length() > 0:
-		#move_and_collide(velocity.normalized())# * speed)
-		
+
+	if velocity.length() > 0:		
 		velocity = velocity.normalized() * speed
 #		$Trail.emitting = true
 #		# play animation here if have one
 #
 #	else:
 #		$Trail.emitting = false
+	var motion = velocity * delta
 
-	
 	position += velocity * delta
 	position.x = clamp(position.x, 0, screensize.x)
 	position.y = clamp(position.y, 0, screensize.y)
+
+	pass
 
 
 
@@ -95,18 +101,26 @@ func _on_ShootStick_not_shooting():
 func _on_Player_body_entered(body):
 	#print("touching it")
 	if body.is_in_group("Enemies"):
+		$DamageParticles.emitting = false
 		body.queue_free()
 		player_health -= 1
 		$DamageParticles.emitting = true
 		emit_signal("damaged")
 		check_health()
+		
+		### Make a function to call on player death that makes everything
+		### except the particle emitter invisible and then destroy after completed
+		### display game over afer destroyed
+
 	
-	if body.is_in_group("Pickup"):
-		print("picked up")
+	elif body.is_in_group("Pickup"):
 		if body.is_in_group("HealthPickup"):
-			heal(body) # function will make health orb appear to rotate around player
-			### quickly rotates to center and then triggers a healing effect and health += 1
-			print("healed")
+			heal(body) 
+	
+	elif body.is_in_group("Walls"):
+		print("hit a wall")
+		#velocity = Vector2(0, 0)
+		
 	
 	### particle of taking damage
 	### if health == 2 set the particle system to be more smokey
@@ -114,11 +128,11 @@ func _on_Player_body_entered(body):
 	### if health == 0 make a little explosion
 
 func heal(pickup):
-	### create an effect that makes the pickup spiral into player	
-	player_health += 1
-	$HealingParticles.emitting = true
-	pickup.queue_free()
-	check_health()
+	if player_health < 3:
+		player_health += 1
+		$HealingParticles.emitting = true
+		pickup.queue_free()
+		check_health()
 
 
 func start(pos):
@@ -163,10 +177,7 @@ func lean(direc):
 	tween.interpolate_property(self, "rotation", 0, direc * speed / 100, 20, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	tween.start()
 	self.rotation = clamp(self.rotation, -0.08, 0.08)
-	
-#	yield(get_tree().create_timer(5), "timeout")
-#	tween.interpolate_property(self, "rotation", direction, 0, 20, Tween.TRANS_LINEAR, Tween.EASE_IN)
-#	tween.start()
+
 
 func check_health():
 	if player_health == 3:
@@ -211,3 +222,26 @@ func check_health():
 #		emit_signal("hit")
 #		$CollisionShape2D.disabled = true
 #	pass # replace with function body
+
+
+func _on_Move_Stick_touching():
+	acceleration = (direction.x * direction.x) + (direction.y * direction.y)
+	acceleration = clamp(sqrt(acceleration), 0, 100)
+	acceleration *= 4#2.3
+	#acceleration += speed
+	acceleration = clamp(acceleration, 0, 220)
+
+	tween.interpolate_property(self, "speed", speed, acceleration, 0.5, Tween.TRANS_LINEAR, Tween.EASE_IN)
+	tween.start()
+	
+	$Trail.emitting = true
+	pass # replace with function body
+
+
+func _on_Move_Stick_released():
+	tween.interpolate_property(self, "speed", speed, 0, 0.6, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.start()
+	
+	if player_health == 3:
+		$Trail.emitting = false
+	pass # replace with function body

@@ -1,0 +1,89 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Scripts/World.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Area1.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/UFO.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/AnalogStick.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/Popup_Puzzle.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/Door.tscn" type="PackedScene" id=7]
+
+[node name="World" type="Node2D" index="0"]
+
+script = ExtResource( 1 )
+
+[node name="Area1" parent="." index="0" instance=ExtResource( 2 )]
+
+scale = Vector2( 0.5, 0.5 )
+_sections_unfolded = [ "Collision", "Transform" ]
+
+[node name="UFO" parent="." index="1" instance=ExtResource( 3 )]
+
+position = Vector2( 259.971, 40.7476 )
+collision_mask = 3
+_sections_unfolded = [ "Collision", "Pickable", "Transform", "collision" ]
+move_speed = 300
+
+[node name="Camera2D" type="Camera2D" parent="UFO" index="2"]
+
+position = Vector2( 0, 3.8147e-006 )
+anchor_mode = 1
+rotating = false
+current = true
+zoom = Vector2( 1, 1 )
+limit_left = -10000000
+limit_top = -10000000
+limit_right = 10000000
+limit_bottom = 10000000
+limit_smoothed = false
+drag_margin_h_enabled = true
+drag_margin_v_enabled = true
+smoothing_enabled = true
+smoothing_speed = 3.0
+offset_v = 0.0
+offset_h = 0.0
+drag_margin_left = 0.0
+drag_margin_top = 0.0
+drag_margin_right = 0.0
+drag_margin_bottom = 0.0
+editor_draw_screen = true
+editor_draw_limits = false
+editor_draw_drag_margin = false
+script = ExtResource( 4 )
+_sections_unfolded = [ "Drag Margin", "Editor", "Smoothing", "Transform" ]
+
+[node name="HUD" type="CanvasLayer" parent="." index="2"]
+
+layer = 1
+offset = Vector2( 0, 0 )
+rotation = 0.0
+scale = Vector2( 1, 1 )
+transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+
+[node name="Move_Stick" parent="HUD" index="0" instance=ExtResource( 5 )]
+
+[node name="Popup_Puzzle" parent="HUD" index="1" instance=ExtResource( 6 )]
+
+visible = false
+margin_left = 206.0
+margin_top = 156.0
+margin_right = 296.0
+margin_bottom = 210.0
+rect_scale = Vector2( 3, 5 )
+_sections_unfolded = [ "Grow Direction", "Pause", "Rect", "Size Flags", "Visibility" ]
+
+[node name="Door" parent="." index="3" instance=ExtResource( 7 )]
+
+position = Vector2( -817.67, 420.568 )
+
+[connection signal="released" from="HUD/Move_Stick" to="." method="_on_Move_Stick_released"]
+
+[connection signal="released" from="HUD/Move_Stick" to="UFO" method="_on_Move_Stick_released"]
+
+[connection signal="touching" from="HUD/Move_Stick" to="." method="_on_Move_Stick_touching"]
+
+[connection signal="touching" from="HUD/Move_Stick" to="UFO" method="_on_Move_Stick_touching"]
+
+[connection signal="body_exited" from="Door" to="Door" method="_on_Door_body_exited"]
+
+

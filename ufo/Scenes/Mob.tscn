@@ -55,6 +55,8 @@ position = Vector2( -0.0232723, 0.98861 )
 scale = Vector2( 1.88573, 1.86393 )
 shape = SubResource( 1 )
 
+[connection signal="body_entered" from="." to="." method="_on_Mob_body_entered"]
+
 [connection signal="screen_exited" from="Visibility" to="." method="_on_Visibility_screen_exited"]
 
 

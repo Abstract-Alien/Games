@@ -66,7 +66,7 @@ func _on_ScoreTimer_timeout():
 
 
 func _on_StartTimer_timeout():
-	$MobTimer.start()
+	#$MobTimer.start()
 	#$ScoreTimer.start()
 	pass
 
@@ -112,13 +112,14 @@ func _on_ShootStick_not_shooting():
 
 ### lasers to instantiate on the outside of ufo
 ### if moving fast, lasers look like they aren't attached to ufo when shot. fix that
+### get UFO to contact walls properly
+### redo UFO player controls
 
-### improve screen shake
-### particles or something else to signify player taking damage
+
 ### specific player death animation (explosion maybe)
 ### UFO smoke on low health looks more like smoke
-### pickups that will heal the UFO
-### health pickups only drop if player is damaged
+
+### Health pickups fade over time
 ### enemy movement animations
 ### particles or something to signify hitting an enemy
 ### specific enemy death animation
@@ -130,3 +131,4 @@ func _on_ShootStick_not_shooting():
 ### pushing either button pauses the game
 ### tapping outside of the weapon select menu closes it
 ### have to close the game menu manually
+

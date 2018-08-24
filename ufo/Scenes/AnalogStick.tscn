@@ -4,13 +4,8 @@
 [ext_resource path="res://Sprites/Items/analog_stick_bg_1.png" type="Texture" id=2]
 [ext_resource path="res://Sprites/Items/analog_stick.png" type="Texture" id=3]
 
-[node name="AnalogStick" type="KinematicBody2D"]
+[node name="AnalogStick" type="Node2D" index="0"]
 
-position = Vector2( 0.664703, 0.474434 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-collision/safe_margin = 0.08
 script = ExtResource( 1 )
 _sections_unfolded = [ "Angular", "Applied Forces", "Collision", "Linear", "Pickable", "Transform" ]
 direction = Vector2( 0, 0 )
